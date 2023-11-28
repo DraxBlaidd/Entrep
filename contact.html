@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #7654b7; /* Original background color */
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #top-search-container {
+            position: relative;
+            height: 8%; /* 8% of the screen height */
+            width: 100%;
+            background-color: rgba(87, 73, 114, 0); /* Transparent Search background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border-bottom: 2px solid #463c63; /* Darker border color */
+            z-index: 1000;
+        }
+
+        #search-input-top {
+            width: 40%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            color: #574972;
+        }
+
+        #map-container {
+            position: relative;
+            flex: 1;
+            border: 10px solid #574972; /* Original border color */
+            box-sizing: border-box;
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        #search-input-above {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            color: #574972;
+        }
+
+        #view-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: #574972;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        #tab-container {
+            position: absolute;
+            top: 8%; /* Align with the bottom of the top tab */
+            left: -20%; /* Initially hide the left tab */
+            background-color: rgba(87, 73, 114, 1); /* Solid background color */
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            height: 92%; /* Cover 92% of the screen height */
+            width: 20%; /* Cover 20% of the screen width */
+            transition: left 0.5s;
+            opacity: 0; /* Initially not visible */
+        }
+
+        .tab {
+            background-color: #574972;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #message-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #574972;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-search-container">
+        <input type="text" placeholder="Search..." id="search-input-top">
+    </div>
+
+    <div id="map-container">
+        <!-- Map container using Leaflet -->
+        <div id="map"></div>
+    </div>
+
+    <div id="view-button" onclick="toggleTab()">View</div>
+
+    <div id="tab-container" onclick="toggleTab()">
+        <div class="tab" id="tab1">Tab 1</div>
+        <div class="tab" id="tab2">Tab 2</div>
+        <!-- Add more tabs as needed -->
+    </div>
+
+    <div id="message-container">Press G to center.</div>
+
+    <script>
+        var map;
+        var churchCoordinates = [14.3290, 120.9360];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create the map after the DOM is fully loaded
+            map = L.map('map', {
+                center: churchCoordinates, // Center the map at the Immaculate Church
+                zoom: 15,
+                minZoom: 15, // Set minimum zoom level
+                maxBounds: L.latLngBounds(
+                    L.latLng(14.4106, 120.9190), // Southwest bound (Bacoor)
+                    L.latLng(14.2454, 121.0141)  // Northeast bound (Silang)
+                )
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            // Center the map when "G" key is pressed
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'g' || event.key === 'G') {
+                    map.setView(churchCoordinates, 15);
+                }
+            });
+        });
+
+        // Function to toggle the left tab
+        function toggleTab() {
+            var tabContainer = document.getElementById('tab-container');
+            if (tabContainer.style.left === '-20%') {
+                tabContainer.style.left = '0';
+                tabContainer.style.opacity = '1';
+            } else {
+                tabContainer.style.left = '-20%';
+                tabContainer.style.opacity = '0';
+            }
+        }
+    </script>
+
+    <!-- Leaflet CSS and JavaScript files -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</body>
+</html>
